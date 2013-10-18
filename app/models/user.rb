@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :microposts  , dependent: :destroy
 	before_save { self.email = email.downcase }
 	before_create :create_remember_token
 	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
@@ -21,4 +22,9 @@ class User < ActiveRecord::Base
     def create_remember_token
       self.remember_token = User.encrypt(User.new_remember_token)
     end
+
+    def feed
+    # This is preliminary. See "Following users" for the full implementation.
+    Micropost.where("user_id = ?", id)
+  end
 end
